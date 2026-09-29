@@ -141,6 +141,18 @@ uint8_t SacredSunBms::checksum_(const std::string &data) {
 }
 
 bool SacredSunBms::parse_frame_(const std::string &frame) {
+  // Some auto-direction RS485 modules echo the transmitted request back to RX.
+  // Ignore that local echo so it is not reported as an invalid BMS response.
+  if (this->address_ >= 1 && this->address_ <= 9) {
+    std::string request_echo = REQUESTS[this->address_ - 1];
+    if (!request_echo.empty() && request_echo.back() == '\r')
+      request_echo.pop_back();
+    if (frame == request_echo) {
+      ESP_LOGV(TAG, "Ignoring local RS485 request echo");
+      return true;
+    }
+  }
+
   if (frame.size() < MIN_FRAME_LENGTH)
     return false;
 
