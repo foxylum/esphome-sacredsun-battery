@@ -1,0 +1,131 @@
+substitutions:
+  device_name: esp32-sacredsun
+  friendly_name: ESP32 SacredSun
+
+esphome:
+  name: ${device_name}
+  friendly_name: ${friendly_name}
+
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+
+logger:
+  level: DEBUG
+
+api:
+  encryption:
+    key: !secret sacredsun_api_key
+
+ota:
+  - platform: esphome
+    password: !secret sacredsun_ota_password
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  ap:
+    ssid: "${friendly_name} Fallback"
+    password: !secret sacredsun_fallback_password
+
+captive_portal:
+
+external_components:
+  - source: github://foxylum/esphome-sacredsun-battery@main
+    components: [ sacredsun_bms ]
+
+uart:
+  - id: uart_sacredsun
+    tx_pin: GPIO25
+    rx_pin: GPIO26
+    baud_rate: 9600
+    data_bits: 8
+    parity: NONE
+    stop_bits: 1
+    rx_buffer_size: 256
+
+sacredsun_bms:
+  id: sacredsun
+  uart_id: uart_sacredsun
+  address: 1
+  update_interval: 5s
+
+sensor:
+  - platform: sacredsun_bms
+    sacredsun_bms_id: sacredsun
+
+    state_of_charge:
+      name: "SacredSun SOC"
+
+    total_voltage:
+      name: "SacredSun Total Voltage"
+
+    current:
+      name: "SacredSun Current"
+
+    state_of_health:
+      name: "SacredSun SOH"
+
+    nominal_capacity:
+      name: "SacredSun Nominal Capacity"
+
+    remaining_capacity:
+      name: "SacredSun Remaining Capacity"
+
+    charging_cycles:
+      name: "SacredSun Charging Cycles"
+
+    cell_count:
+      name: "SacredSun Cell Count"
+
+    temperature_sensor_count:
+      name: "SacredSun Temperature Sensor Count"
+
+    cell_voltage_1:
+      name: "SacredSun Cell 1 Voltage"
+    cell_voltage_2:
+      name: "SacredSun Cell 2 Voltage"
+    cell_voltage_3:
+      name: "SacredSun Cell 3 Voltage"
+    cell_voltage_4:
+      name: "SacredSun Cell 4 Voltage"
+    cell_voltage_5:
+      name: "SacredSun Cell 5 Voltage"
+    cell_voltage_6:
+      name: "SacredSun Cell 6 Voltage"
+    cell_voltage_7:
+      name: "SacredSun Cell 7 Voltage"
+    cell_voltage_8:
+      name: "SacredSun Cell 8 Voltage"
+    cell_voltage_9:
+      name: "SacredSun Cell 9 Voltage"
+    cell_voltage_10:
+      name: "SacredSun Cell 10 Voltage"
+    cell_voltage_11:
+      name: "SacredSun Cell 11 Voltage"
+    cell_voltage_12:
+      name: "SacredSun Cell 12 Voltage"
+    cell_voltage_13:
+      name: "SacredSun Cell 13 Voltage"
+    cell_voltage_14:
+      name: "SacredSun Cell 14 Voltage"
+    cell_voltage_15:
+      name: "SacredSun Cell 15 Voltage"
+
+    bms_temperature_1:
+      name: "SacredSun BMS Temperature 1"
+    bms_temperature_2:
+      name: "SacredSun BMS Temperature 2"
+    bms_temperature_3:
+      name: "SacredSun BMS Temperature 3"
+
+    battery_temperature_1:
+      name: "SacredSun Battery Temperature 1"
+    battery_temperature_2:
+      name: "SacredSun Battery Temperature 2"
+    battery_temperature_3:
+      name: "SacredSun Battery Temperature 3"
+    battery_temperature_4:
+      name: "SacredSun Battery Temperature 4"
